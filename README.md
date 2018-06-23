@@ -1,11 +1,11 @@
 # MGKConfigurationManager
 Simple configuration manager for settings and secrets in .NET
 
-MGKConfigurationManager is a simple .NET library for pulling in per-project and solution-wide secrets and solution-wide settings when developing locally.  (Per-project settings will be in web.config as normal.)  When running in a hosted environment (e.g. Microsoft Azure) settings and secrets would typically be stored in app configuration settings or a dedicated key vault.
+MGKConfigurationManager is a simple .NET library for pulling in per-project and solution-wide secrets and solution-wide settings when developing locally.  (Per-project settings will be in web.config as normal.)  When running in a hosted environment (e.g. Microsoft Azure) settings and secrets would typically be stored in an app configuration settings store or a dedicated key vault.
 
 All settings and secrets are stored outside the project working directory so as not to be checked into source control.
 
-MGKConfigurationManager imports all settings and secrets into a single, flat namespace implemented as a .NET `NameValueCollection`.  As a result key names must be unique across all config files.
+MGKConfigurationManager imports all settings and secrets into a single, flat namespace implemented as a .NET `NameValueCollection`.  As a result key names must be unique across all config files.  MGKConfigurationManager uses the .NET configuration management classes so it will grab secrets and settings whether they're defined in local config files, server-based config files or in the Azure App Service Application Settings blade.
 
 MGKConfigurationManager has no error or exception handling.
 
@@ -87,6 +87,8 @@ Bootstrap MGKConfigurationManager as follows - when your app starts (entry point
 
 `static MGKConfigurationManager settings = new MGKConfigurationManager(new string[] { "LocalSecrets", "GlobalSecrets", "GlobalSettings" });`
 
-As stated above, MGKConfigurationManager imports all settings and secrets into a single, flat namespace where key name uniqueness is a requirement.  Values can be retrieved as follows:
+MGKConfigurationManager imports all settings and secrets - regardless of the source as stated above - into a single, flat namespace.  Key name uniqueness is a requirement.  Values are retrieved as follows:
 
 `settings.AppSettings["My_setting_or_secret_name"]);`
+
+Requests for non-existent key names return an empty string.
